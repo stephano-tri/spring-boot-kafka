@@ -8,4 +8,5 @@ class KafkaBootApplication
 
 fun main(args : Array<String>) {
     runApplication<KafkaBootApplication>(*args)
+
 }
