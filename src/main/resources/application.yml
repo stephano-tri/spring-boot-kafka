@@ -1,5 +1,13 @@
 spring:
   r2dbc:
     url: r2dbc:postgresql://localhost:5432/dvdrental
-    username: root
+    username: postgres
     password: example
+
+#kafka
+  kafka:
+    bootstrap-servers: localhost:9092,localhost:9093,localhost:9094
+  # Producer
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer

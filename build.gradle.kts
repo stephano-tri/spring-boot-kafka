@@ -27,6 +27,8 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor")
     implementation("org.springframework.kafka:spring-kafka")
+    // https://mvnrepository.com/artifact/io.projectreactor.kafka/reactor-kafka
+    implementation("io.projectreactor.kafka:reactor-kafka:1.3.22")
     // https://mvnrepository.com/artifact/org.postgresql/r2dbc-postgresql
     implementation("org.postgresql:r2dbc-postgresql:1.0.4.RELEASE")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
