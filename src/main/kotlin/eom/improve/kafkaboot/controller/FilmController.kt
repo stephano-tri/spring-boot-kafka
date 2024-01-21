@@ -1,5 +1,6 @@
 package eom.improve.kafkaboot.controller
 
+import eom.improve.kafkaboot.dto.Film
 import eom.improve.kafkaboot.model.FilmEntity
 import eom.improve.kafkaboot.service.FilmService
 import org.springframework.web.bind.annotation.GetMapping
@@ -13,7 +14,7 @@ class FilmController (
     private val filmService: FilmService
 ){
     @GetMapping("/list")
-    fun getFilmList(): Mono<List<FilmEntity>> {
-        return filmService.findAll().collectList();
+    fun getFilmList(): Mono<List<Film>> {
+        return filmService.findAll().map { it.convert2Pojo() }.collectList()
     }
 }
