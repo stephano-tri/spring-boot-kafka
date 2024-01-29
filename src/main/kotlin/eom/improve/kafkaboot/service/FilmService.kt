@@ -18,4 +18,8 @@ class FilmService(
             .switchIfEmpty(Mono.error(RuntimeException("Not registered film")))
             .flatMap { filmRepository.save(updatedFilm) }
     }
+
+    fun saveFilm(toBeSavedFilm : FilmEntity) : Mono<FilmEntity> {
+        return filmRepository.save(toBeSavedFilm);
+    }
 }

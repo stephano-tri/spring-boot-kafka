@@ -21,4 +21,9 @@ class FilmControllerImpl(
             .flatMap { it.convert2Pojo().toMono() }
     }
 
+    override fun saveFilm(toBeSavedFilm: Film): Mono<Film> {
+        return filmService.saveFilm(toBeSavedFilm.convert2Entity())
+            .flatMap { toBeSavedFilm.toMono() }
+    }
+
 }

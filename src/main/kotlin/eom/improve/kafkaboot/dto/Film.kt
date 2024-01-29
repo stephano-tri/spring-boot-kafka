@@ -2,8 +2,9 @@ package eom.improve.kafkaboot.dto
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.annotation.JsonProperty
-import eom.improve.kafkaboot.enum.MpaaRating
 import eom.improve.kafkaboot.model.FilmEntity
+import jakarta.validation.constraints.NotBlank
+import org.jetbrains.annotations.NotNull
 import java.math.BigDecimal
 import java.time.LocalDateTime
 
@@ -13,7 +14,7 @@ import java.time.LocalDateTime
 @JsonIgnoreProperties(ignoreUnknown = true)
 data class Film (
     @field:JsonProperty("film_id") val filmId: Int,
-    val title: String,
+    @field:NotBlank(message = "title can't be empty") @NotNull val title: String,
     val description: String,
     @field:JsonProperty("release_year") val releaseYear: Int,
     @field:JsonProperty("language_id") val languageId: Int,
