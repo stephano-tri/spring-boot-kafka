@@ -12,6 +12,6 @@ class MainController {
 
     @GetMapping("/hello")
     fun hello(): Mono<String> {
-        return "Hello, Inspien!".toMono()
+        return "Hello, Kafka!".toMono()
     }
 }
