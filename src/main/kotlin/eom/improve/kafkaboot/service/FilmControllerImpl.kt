@@ -26,4 +26,8 @@ class FilmControllerImpl(
             .flatMap { toBeSavedFilm.toMono() }
     }
 
+    override fun deleteFilm(filmId : Int) : Mono<Void> {
+        return filmService.deleteFilm(filmId)
+    }
+
 }

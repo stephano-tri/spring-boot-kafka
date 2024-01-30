@@ -17,4 +17,7 @@ interface FilmController {
 
     @PostMapping("/save")
     fun saveFilm(@Valid @RequestBody toBeSavedFilm : Film) : Mono<Film>
+
+    @DeleteMapping("/delete/{filmId}")
+    fun deleteFilm(@PathVariable filmId : Int) : Mono<Void>
 }

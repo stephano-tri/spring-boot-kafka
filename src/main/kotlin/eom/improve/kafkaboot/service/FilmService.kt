@@ -22,4 +22,12 @@ class FilmService(
     fun saveFilm(toBeSavedFilm : FilmEntity) : Mono<FilmEntity> {
         return filmRepository.save(toBeSavedFilm);
     }
+
+    fun deleteFilm(filmId : Int) : Mono<Void> {
+        // need to implement cascade delete for table data that set foreign key
+        return filmRepository.findById(filmId)
+            .switchIfEmpty(Mono.error(RuntimeException("Not registered film")))
+            .flatMap { filmRepository.deleteById(filmId) }
+            .then()
+    }
 }

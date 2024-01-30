@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.ResponseBody
 import org.springframework.web.bind.annotation.RestControllerAdvice
 import org.springframework.web.bind.support.WebExchangeBindException
 import org.springframework.web.server.ServerWebExchange
-import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 import reactor.kotlin.core.publisher.toMono
 import java.util.stream.Collectors
@@ -32,4 +31,7 @@ class GlobalExceptionHandler {
         ).toMono()
     }
     // need to implement error logging publish to kafka
+    // detail message = WebExchangeBindException.message
+
+
 }
