@@ -25,6 +25,13 @@ class FilmService(
 
     fun deleteFilm(filmId : Int) : Mono<Void> {
         // need to implement cascade delete for table data that set foreign key
+
+        // payment -> rental -> inventory
+        // film_actor
+        // film_category
+
+
+
         return filmRepository.findById(filmId)
             .switchIfEmpty(Mono.error(RuntimeException("Not registered film")))
             .flatMap { filmRepository.deleteById(filmId) }
