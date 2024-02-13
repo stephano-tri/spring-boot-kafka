@@ -1,12 +1,10 @@
 package eom.improve.kafkaboot.model
 
 import eom.improve.kafkaboot.dto.Film
-import eom.improve.kafkaboot.enum.MpaaRating
 import org.springframework.data.annotation.Id
 import org.springframework.data.relational.core.mapping.Table
 import java.math.BigDecimal
 import java.time.LocalDateTime
-import java.util.*
 
 @Table("film")
 data class FilmEntity(
