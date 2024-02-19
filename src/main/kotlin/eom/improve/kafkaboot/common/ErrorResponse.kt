@@ -9,7 +9,7 @@ data class ErrorResponse(
     @get:JsonProperty("status") val status: HttpStatus,
     @get:JsonProperty("message") val message: String,
     @get:JsonProperty("error") val error: String = status.reasonPhrase,
-    @get:JsonProperty("requestId") val requestId: String = path.substringAfterLast("/"),
+    @get:JsonProperty("request_id") val requestId: String = path.substringAfterLast("/"),
     @get:JsonProperty("timestamp") val timestamp: ZonedDateTime= ZonedDateTime.now()
 ) {
     constructor() : this(

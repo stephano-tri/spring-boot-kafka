@@ -9,4 +9,5 @@ import reactor.core.publisher.Mono
 @Repository
 interface FilmRepository : R2dbcRepository<FilmEntity, Int> {
     fun findAllBy() : Flux<FilmEntity>
+    fun deleteByFilmId(filmId: Int) : Mono<Void>
 }
