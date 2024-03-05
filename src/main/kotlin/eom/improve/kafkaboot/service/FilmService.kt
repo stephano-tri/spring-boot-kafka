@@ -1,12 +1,8 @@
 package eom.improve.kafkaboot.service
 
 import eom.improve.kafkaboot.model.FilmEntity
-import eom.improve.kafkaboot.repository.FilmRepository
-import eom.improve.kafkaboot.repository.InventoryRepository
-import eom.improve.kafkaboot.repository.PaymentRepository
-import eom.improve.kafkaboot.repository.RentalRepository
+import eom.improve.kafkaboot.repository.*
 import org.springframework.stereotype.Service
-import org.springframework.transaction.annotation.Transactional
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 import reactor.kotlin.core.publisher.toMono
@@ -17,7 +13,9 @@ class FilmService(
     private val filmRepository : FilmRepository,
     private val paymentRepository : PaymentRepository,
     private val inventoryRepository : InventoryRepository,
-    private val rentalRepository : RentalRepository
+    private val rentalRepository : RentalRepository,
+    private val filmActorRepository: FilmActorRepository,
+    private val filmCategoryRepository: FilmCategoryRepository
 ) {
     fun findAll() : Flux<FilmEntity> = filmRepository.findAllBy()
 
@@ -31,7 +29,6 @@ class FilmService(
         return filmRepository.save(toBeSavedFilm);
     }
 
-    @Transactional
     fun deleteFilm(filmId : Int) : Mono<Void> {
         // need to implement cascade delete(maybe soft) for table data that set foreign key
         return filmRepository.findById(filmId)
@@ -52,13 +49,24 @@ class FilmService(
                              }.then(inventoryEn.toMono())
                      }
                      .flatMap { inventoryEn ->
-                         println(inventoryEn.inventoryId)
                          inventoryRepository.deleteByInventoryId(inventoryEn.inventoryId)
                      }
                      .then(filmEn.toMono())
             }
             .flatMap { filmEn ->
-                filmRepository.deleteByFilmId(filmEn.filmId)
+                Mono.zip(
+                    filmActorRepository.findAllByFilmId(filmEn.filmId)
+                        .flatMap { filmActorRepository.deleteByFilmId(it.filmId) }
+                        .then()
+                        ,
+                    filmCategoryRepository.findAllByFilmId(filmEn.filmId)
+                        .flatMap { filmCategoryRepository.deleteByFilmId(it.filmId) }
+                        .then()
+                )
+                    .then(filmEn.toMono())
+            }
+            .flatMap {
+                filmRepository.deleteByFilmId(it.filmId)
             }
     }
 }
