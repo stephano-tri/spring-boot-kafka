@@ -1,5 +1,6 @@
 package eom.improve.kafkaboot.service
 
+import eom.improve.kafkaboot.common.PaginatedResponse
 import eom.improve.kafkaboot.controller.FilmController
 import eom.improve.kafkaboot.dto.Film
 import org.springframework.stereotype.Service
@@ -14,6 +15,9 @@ class FilmControllerImpl(
     override fun getAllFilms(): Mono<List<Film>> {
         return filmService.findAll().map { it.convert2Pojo() }
             .collectSortedList((Comparator<Film> { o1, o2 -> o1.filmId.compareTo(o2.filmId) }))
+    }
+
+    override fun getFilms(page: Long, limit: Long): Mono<PaginatedResponse<List<Film>>> {
     }
 
     override fun modifyFilm(updatedFilm : Film) : Mono<Film> {

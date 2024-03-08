@@ -1,5 +1,6 @@
 package eom.improve.kafkaboot.controller
 
+import eom.improve.kafkaboot.common.PaginatedResponse
 import eom.improve.kafkaboot.dto.Film
 import jakarta.validation.Valid
 import org.springframework.web.bind.annotation.*
@@ -11,6 +12,9 @@ interface FilmController {
 
     @GetMapping("/list/all")
     fun getAllFilms() : Mono<List<Film>>
+
+    @GetMapping("/list/{page}/{limit}")
+    fun getFilms(@PathVariable page: Long, @PathVariable limit: Long) : Mono<PaginatedResponse<List<Film>>>
 
     @PutMapping("/modify")
     fun modifyFilm(@RequestBody updatedFilm : Film) : Mono<Film>
