@@ -25,13 +25,15 @@ services:
     restart: on-failure
     volumes:
       - postgresql_main_data:/bitnami/postgresql
+      - ./init.sql:/docker-entrypoint-initdb. d/db.sql
     environment:
       - POSTGRESQL_REPLICATION_MODE=master
       - POSTGRESQL_REPLICATION_USER=repl_user
       - POSTGRESQL_REPLICATION_PASSWORD=repl_password
       - POSTGRESQL_USERNAME=my_user
       - POSTGRESQL_PASSWORD=my_password
-      - POSTGRESQL_DATABASE=ourhour
+      - POSTGRESQL_DATABASE=ins
+      - ALLOW_EMPTY_PASSWORD=yes
 
   postgresql-standby:
     image: 'bitnami/postgresql:latest'
