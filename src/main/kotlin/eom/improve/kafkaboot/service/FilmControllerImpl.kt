@@ -19,16 +19,7 @@ class FilmControllerImpl(
     }
 
     override fun getFilms(page: Long, limit: Long): Mono<PaginatedResponse<Film>> {
-        return filmService.findAllByPageable(PageRequest.of(page.toInt(), limit.toInt()))
-            .map { it.convert2Pojo() }
-            .collectList()
-            .flatMap { films ->
-                PaginatedResponse(
-                    response = films,
-                    currentPage = page,
-                    totalPages = (films.size / limit).toLong()
-                ).toMono()
-            }
+        return filmService.findAllByPageable(PageRequest.of(page.toInt() , limit.toInt()))
     }
 
     override fun modifyFilm(updatedFilm : Film) : Mono<Film> {

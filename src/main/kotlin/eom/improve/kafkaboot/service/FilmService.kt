@@ -1,5 +1,7 @@
 package eom.improve.kafkaboot.service
 
+import eom.improve.kafkaboot.common.PaginatedResponse
+import eom.improve.kafkaboot.dto.Film
 import eom.improve.kafkaboot.model.FilmEntity
 import eom.improve.kafkaboot.model.InventoryEntity
 import eom.improve.kafkaboot.model.RentalEntity
@@ -21,7 +23,11 @@ class FilmService(
     private val filmCategoryRepository: FilmCategoryRepository
 ) {
 
-    fun findAllByPageable(pageable: Pageable) : Flux<FilmEntity> = filmRepository.findAllBy(pageable)
+    fun findAllByPageable(pageable: Pageable) : Mono<PaginatedResponse<Film>> = filmRepository.findAllByOrderByFilmId(pageable)
+        .collectSortedList { o1, o2 ->  o1.filmId - o2.filmId }
+        .zipWith(filmRepository.count().toMono())
+        .map { pagination -> PaginatedResponse<Film>( pagination.t1.map { it.convert2Pojo() } , pageable.pageNumber.toLong()  ,pagination.t2 / pageable.pageSize ) }
+
 
     fun findAll() : Flux<FilmEntity> = filmRepository.findAllBy()
 
