@@ -3,6 +3,7 @@ package eom.improve.kafkaboot.service
 import eom.improve.kafkaboot.common.PaginatedResponse
 import eom.improve.kafkaboot.controller.FilmController
 import eom.improve.kafkaboot.dto.Film
+import org.springframework.data.domain.PageRequest
 import org.springframework.stereotype.Service
 import reactor.core.publisher.Mono
 import reactor.kotlin.core.publisher.toMono
@@ -17,7 +18,17 @@ class FilmControllerImpl(
             .collectSortedList((Comparator<Film> { o1, o2 -> o1.filmId.compareTo(o2.filmId) }))
     }
 
-    override fun getFilms(page: Long, limit: Long): Mono<PaginatedResponse<List<Film>>> {
+    override fun getFilms(page: Long, limit: Long): Mono<PaginatedResponse<Film>> {
+        return filmService.findAllByPageable(PageRequest.of(page.toInt(), limit.toInt()))
+            .map { it.convert2Pojo() }
+            .collectList()
+            .flatMap { films ->
+                PaginatedResponse(
+                    response = films,
+                    currentPage = page,
+                    totalPages = (films.size / limit).toLong()
+                ).toMono()
+            }
     }
 
     override fun modifyFilm(updatedFilm : Film) : Mono<Film> {

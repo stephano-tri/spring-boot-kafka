@@ -14,7 +14,7 @@ interface FilmController {
     fun getAllFilms() : Mono<List<Film>>
 
     @GetMapping("/list/{page}/{limit}")
-    fun getFilms(@PathVariable page: Long, @PathVariable limit: Long) : Mono<PaginatedResponse<List<Film>>>
+    fun getFilms(@PathVariable page: Long, @PathVariable limit: Long) : Mono<PaginatedResponse<Film>>
 
     @PutMapping("/modify")
     fun modifyFilm(@RequestBody updatedFilm : Film) : Mono<Film>
