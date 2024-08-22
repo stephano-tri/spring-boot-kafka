@@ -11,7 +11,9 @@ import reactor.core.publisher.Mono
 interface FilmController {
 
     @GetMapping("/list/all")
-    fun getAllFilms() : Mono<List<Film>>
+    fun getAllFilms(@RequestParam name : String?,
+                    @RequestParam from : Int?,
+                    @RequestParam to : Int?) : Mono<List<Film>>
 
     @GetMapping("/list/{page}/{limit}")
     fun getFilms(@PathVariable page: Long, @PathVariable limit: Long) : Mono<PaginatedResponse<Film>>
