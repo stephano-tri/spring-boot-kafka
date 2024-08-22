@@ -1,8 +1,8 @@
 spring:
   r2dbc:
     url: r2dbc:postgresql://localhost:5432/dvdrental
-    username: postgres
-    password: example
+    username: my_user
+    password: my_password
 
 #kafka
   kafka:
@@ -20,3 +20,6 @@ spring:
         spring.json.use.type.headers: false
     properties:
       spring.json.trusted.packages: '*'
+
+server:
+  port: 7477

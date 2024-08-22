@@ -1,7 +1,12 @@
 package eom.improve.kafkaboot.service
 
+import eom.improve.kafkaboot.common.PaginatedResponse
+import eom.improve.kafkaboot.dto.Film
 import eom.improve.kafkaboot.model.FilmEntity
+import eom.improve.kafkaboot.model.InventoryEntity
+import eom.improve.kafkaboot.model.RentalEntity
 import eom.improve.kafkaboot.repository.*
+import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
@@ -17,6 +22,13 @@ class FilmService(
     private val filmActorRepository: FilmActorRepository,
     private val filmCategoryRepository: FilmCategoryRepository
 ) {
+
+    fun findAllByPageable(pageable: Pageable) : Mono<PaginatedResponse<Film>> = filmRepository.findAllByOrderByFilmId(pageable)
+        .collectSortedList { o1, o2 ->  o1.filmId - o2.filmId }
+        .zipWith(filmRepository.count().toMono())
+        .map { pagination -> PaginatedResponse<Film>( pagination.t1.map { it.convert2Pojo() } , pageable.pageNumber.toLong()  ,pagination.t2 / pageable.pageSize ) }
+
+
     fun findAll() : Flux<FilmEntity> = filmRepository.findAllBy()
 
     fun updateFilm(updatedFilm : FilmEntity) : Mono<FilmEntity> {
@@ -34,31 +46,31 @@ class FilmService(
         return filmRepository.findById(filmId)
             .switchIfEmpty(RuntimeException("Not registered film").toMono())
             .flatMap { filmEn ->
-                 inventoryRepository.findAllByFilmId(filmEn.filmId)
-                     .flatMap { inventoryEn ->
-                         rentalRepository.findAllByInventoryId(inventoryEn.inventoryId)
-                             .flatMap { rentalEn ->
-                                 paymentRepository.findAllByRentalId(rentalEn.rentalId)
-                                     .flatMap { paymentEn ->
-                                            paymentRepository.deleteByPaymentId(paymentEn.paymentId)
-                                     }
-                                     .then(rentalEn.toMono())
-                             }
-                             .flatMap { rentalEn ->
+                inventoryRepository.findAllByFilmId(filmEn.filmId)
+                    .flatMap { inventoryEn ->
+                        rentalRepository.findAllByInventoryId(inventoryEn.inventoryId)
+                            .flatMap { rentalEn ->
+                                paymentRepository.findAllByRentalId(rentalEn.rentalId)
+                                    .flatMap { paymentEn ->
+                                        paymentRepository.deleteByPaymentId(paymentEn.paymentId)
+                                    }
+                                    .then(rentalEn.toMono())
+                            }
+                            .flatMap { rentalEn ->
                                 rentalRepository.deleteByRentalId(rentalEn.rentalId)
-                             }.then(inventoryEn.toMono())
-                     }
-                     .flatMap { inventoryEn ->
-                         inventoryRepository.deleteByInventoryId(inventoryEn.inventoryId)
-                     }
-                     .then(filmEn.toMono())
+                            }.then(inventoryEn.toMono())
+                    }
+                    .flatMap { inventoryEn ->
+                        inventoryRepository.deleteByInventoryId(inventoryEn.inventoryId)
+                    }
+                    .then(filmEn.toMono())
             }
             .flatMap { filmEn ->
                 Mono.zip(
                     filmActorRepository.findAllByFilmId(filmEn.filmId)
                         .flatMap { filmActorRepository.deleteByFilmId(it.filmId) }
                         .then()
-                        ,
+                    ,
                     filmCategoryRepository.findAllByFilmId(filmEn.filmId)
                         .flatMap { filmCategoryRepository.deleteByFilmId(it.filmId) }
                         .then()
